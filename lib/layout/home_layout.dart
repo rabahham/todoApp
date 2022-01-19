@@ -65,11 +65,17 @@ class _HomeLayoutState extends State<HomeLayout> {
           // insertToDatabase();
           if (issBottonSheetShow) {
             if (formKey.currentState.validate()) {
-              Navigator.pop(
-                  context); // neghle9 biha navigator wla popop wla bottomSeet
-              issBottonSheetShow = false;
-              setState(() {
-                fabIcon = Icons.edit;
+              insertToDatabase(
+                titel: tatleController.text,
+                date: timeController.text,
+                time: dateController.text,
+              ).then((value) {
+                Navigator.pop(
+                    context); // neghle9 biha navigator wla popop wla bottomSeet
+                issBottonSheetShow = false;
+                setState(() {
+                  fabIcon = Icons.edit;
+                });
               });
             }
           } else {
@@ -113,7 +119,8 @@ class _HomeLayoutState extends State<HomeLayout> {
                             firstDate: DateTime.now(),
                             lastDate: DateTime.parse('2022-05-26'),
                           ).then((value) {
-                            print(DateFormat.MMMMd().format(value));
+                            dateController.text =
+                                DateFormat.MMMEd().format(value);
                           });
                         },
                         text: 'Date',
@@ -186,11 +193,15 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 
-  void insertToDatabase() {
-    database.transaction((txn) {
+  Future insertToDatabase({
+    @required titel,
+    @required date,
+    @required time,
+  }) async {
+    return await database.transaction((txn) {
       txn
           .rawInsert(
-              'INSRET INTO tasks (titele,date , time ,status) VALUES("first tasks"," 8222" , "591","arw")')
+              'INSRET INTO tasks (titele,date , time ,status) VALUES("$titel"," $time" , "$date","new")')
           .then((value) {
         print('$value inserted successfully');
       }).catchError((error) {
