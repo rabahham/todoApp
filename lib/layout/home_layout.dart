@@ -46,8 +46,8 @@ class _HomeLayoutState extends State<HomeLayout> {
     'Archived Tasks',
   ];
 
-  void initSatate() {
-    print('initstate');
+  initState() {
+    print('initState');
     super.initState();
 
     createDatabase();
@@ -124,7 +124,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                             lastDate: DateTime.parse('2022-05-26'),
                           ).then((value) {
                             dateController.text =
-                                DateFormat.MMMEd().format(value);
+                                DateFormat.yMMMd().format(value);
                           });
                         },
                         text: 'Date',
@@ -183,7 +183,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       'todoapp.db',
       version: 1,
       onCreate: (database, version) {
-        print('database create hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+        print('database create ');
         database
             .execute(
                 'CREATE TABLE tasks (id INTEGER PRIMARY KEY,title TEXT,date TEXT,time TEXT,status TEXT)')
@@ -204,10 +204,11 @@ class _HomeLayoutState extends State<HomeLayout> {
     @required date,
     @required time,
   }) async {
+    print('rani hna 9ble');
     return await database.transaction((txn) {
       txn
           .rawInsert(
-              'INSRET INTO tasks (titele,date , time ,status) VALUES("$titel"," $time" , "$date","new")')
+              'INSERT INTO tasks (title ,date , time ,status) VALUES("$titel"," $time" , "$date","new")')
           .then((value) {
         print('$value inserted successfully');
       }).catchError((error) {
