@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:path/path.dart';
 import 'package:intl/intl.dart';
 import 'package:todoApp/modules/archived_tasks/archived_tasks_screen.dart';
 import 'package:todoApp/modules/done_tasks/done_tasks_screen.dart';
@@ -8,6 +8,7 @@ import 'package:todoApp/modules/new_tasks/new_tasks_screen.dart';
 import 'package:todoApp/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/widgets.dart';
 
 class HomeLayout extends StatefulWidget {
   //  1. create databases
@@ -33,12 +34,6 @@ class _HomeLayoutState extends State<HomeLayout> {
   var timeController = TextEditingController();
   var dateController = TextEditingController();
 
-  void initSatate() {
-    super.initState();
-
-    createDatabase();
-  }
-
   int curraentIndex = 0;
   List<Widget> screens = [
     NewTasksScreen(),
@@ -50,6 +45,14 @@ class _HomeLayoutState extends State<HomeLayout> {
     'Done Tasks',
     'Archived Tasks',
   ];
+
+  void initSatate() {
+    print('initstate');
+    super.initState();
+
+    createDatabase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +73,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                 date: timeController.text,
                 time: dateController.text,
               ).then((value) {
+                print(' insersu $value ');
                 Navigator.pop(
                     context); // neghle9 biha navigator wla popop wla bottomSeet
                 issBottonSheetShow = false;
@@ -83,7 +87,7 @@ class _HomeLayoutState extends State<HomeLayout> {
               // Ykrina popep
               (context) => Container(
                 padding: EdgeInsets.all(15),
-                color: Colors.grey[100],
+                color: Colors.white,
                 child: Form(
                   key: formKey,
                   child: Column(
@@ -131,6 +135,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                   ),
                 ),
               ),
+              elevation: 20.0,
             );
             issBottonSheetShow = true;
             setState(() {
@@ -172,12 +177,13 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 
+  //  1. create databases
   void createDatabase() async {
     database = await openDatabase(
-      'todo.db',
+      'todoapp.db',
       version: 1,
       onCreate: (database, version) {
-        print('database create ');
+        print('database create hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
         database
             .execute(
                 'CREATE TABLE tasks (id INTEGER PRIMARY KEY,title TEXT,date TEXT,time TEXT,status TEXT)')
