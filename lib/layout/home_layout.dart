@@ -33,6 +33,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   var tatleController = TextEditingController();
   var timeController = TextEditingController();
   var dateController = TextEditingController();
+  List<Map> tasks = [];
 
   int curraentIndex = 0;
   List<Widget> screens = [
@@ -74,69 +75,72 @@ class _HomeLayoutState extends State<HomeLayout> {
                 time: dateController.text,
               ).then((value) {
                 print(' insersu $value ');
-                Navigator.pop(
-                    context); // neghle9 biha navigator wla popop wla bottomSeet
-                issBottonSheetShow = false;
-                setState(() {
-                  fabIcon = Icons.edit;
-                });
               });
             }
           } else {
-            scaffoldKey.currentState.showBottomSheet(
-              // Ykrina popep
-              (context) => Container(
-                padding: EdgeInsets.all(15),
-                color: Colors.white,
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      defaultFornField(
-                        NameController: tatleController,
-                        text: 'Title',
-                        iconText: Icons.title,
-                        onTap: () {},
+            scaffoldKey.currentState
+                .showBottomSheet(
+                  // Ykrina popep
+                  (context) => Container(
+                    padding: EdgeInsets.all(15),
+                    color: Colors.white,
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          defaultFornField(
+                            NameController: tatleController,
+                            text: 'Title',
+                            iconText: Icons.title,
+                            onTap: () {},
+                          ),
+                          defaultFornField(
+                            NameController: timeController,
+                            onTap: () {
+                              showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              ).then((value) {
+                                timeController.text =
+                                    value.format(context).toString();
+                              });
+                            },
+                            text: 'Time',
+                            iconText: Icons.watch_later_outlined,
+                            keyboardType: TextInputType.datetime,
+                          ),
+                          defaultFornField(
+                            NameController: dateController,
+                            onTap: () {
+                              showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.parse('2022-05-26'),
+                              ).then((value) {
+                                dateController.text =
+                                    DateFormat.yMMMd().format(value);
+                              });
+                            },
+                            text: 'Date',
+                            iconText: Icons.calendar_today_rounded,
+                            keyboardType: TextInputType.datetime,
+                          ),
+                        ],
                       ),
-                      defaultFornField(
-                        NameController: timeController,
-                        onTap: () {
-                          showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          ).then((value) {
-                            timeController.text =
-                                value.format(context).toString();
-                          });
-                        },
-                        text: 'Time',
-                        iconText: Icons.watch_later_outlined,
-                        keyboardType: TextInputType.datetime,
-                      ),
-                      defaultFornField(
-                        NameController: dateController,
-                        onTap: () {
-                          showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.parse('2022-05-26'),
-                          ).then((value) {
-                            dateController.text =
-                                DateFormat.yMMMd().format(value);
-                          });
-                        },
-                        text: 'Date',
-                        iconText: Icons.calendar_today_rounded,
-                        keyboardType: TextInputType.datetime,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              elevation: 20.0,
-            );
+                  elevation: 20.0,
+                )
+                .closed
+                .then((value) {
+              issBottonSheetShow = false;
+              print('false');
+              setState(() {
+                fabIcon = Icons.edit;
+              });
+            });
             issBottonSheetShow = true;
             setState(() {
               fabIcon = Icons.add;
@@ -194,6 +198,10 @@ class _HomeLayoutState extends State<HomeLayout> {
         });
       },
       onOpen: (database) {
+        getDataFromDatabase(database).then((value) {
+          tasks = value;
+          print(tasks);
+        });
         print(' database opened  ');
       },
     );
@@ -217,5 +225,9 @@ class _HomeLayoutState extends State<HomeLayout> {
 
       return null;
     });
+  }
+
+  Future<List<Map>> getDataFromDatabase(database) async {
+    return await database.rawQuery('SELECT * FROM tasks');
   }
 }
