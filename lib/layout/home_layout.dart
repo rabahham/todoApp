@@ -9,6 +9,7 @@ import 'package:todoApp/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
+import 'package:todoApp/shared/components/constants.dart';
 
 class HomeLayout extends StatefulWidget {
   //  1. create databases
@@ -33,7 +34,6 @@ class _HomeLayoutState extends State<HomeLayout> {
   var tatleController = TextEditingController();
   var timeController = TextEditingController();
   var dateController = TextEditingController();
-  List<Map> tasks = [];
 
   int curraentIndex = 0;
   List<Widget> screens = [
@@ -63,7 +63,9 @@ class _HomeLayoutState extends State<HomeLayout> {
           titles[curraentIndex],
         ),
       ),
-      body: screens[curraentIndex],
+      body: tasks.length == 0
+          ? Center(child: CircularProgressIndicator())
+          : screens[curraentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // insertToDatabase();
@@ -74,6 +76,15 @@ class _HomeLayoutState extends State<HomeLayout> {
                 date: timeController.text,
                 time: dateController.text,
               ).then((value) {
+                getDataFromDatabase(database).then((value) {
+                  setState(() {
+                    tasks = value;
+                    print(tasks);
+                    issBottonSheetShow = false;
+                  });
+                  Navigator.pop(context);
+                });
+
                 print(' insersu $value ');
               });
             }
@@ -199,8 +210,10 @@ class _HomeLayoutState extends State<HomeLayout> {
       },
       onOpen: (database) {
         getDataFromDatabase(database).then((value) {
-          tasks = value;
-          print(tasks);
+          setState(() {
+            tasks = value;
+            //  print(tasks);
+          });
         });
         print(' database opened  ');
       },

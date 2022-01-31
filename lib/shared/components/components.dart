@@ -52,3 +52,42 @@ Widget defaultFornField({
         },
       ),
     );
+
+Widget defuletItem({
+  @required title,
+  @required time,
+  @required date,
+}) =>
+    Padding(
+      padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 40.0,
+            child: Text(
+              time,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(
+            width: 20.0,
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Text(
+                date,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
