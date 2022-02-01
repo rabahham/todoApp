@@ -25,8 +25,7 @@ class HomeLayout extends StatelessWidget {
   var scaffoldKey =
       GlobalKey<ScaffoldState>(); // bcche na2rfo ta3mn win rana dayrino
   var formKey = GlobalKey<FormState>();
-  bool issBottonSheetShow = false;
-  IconData fabIcon = Icons.edit;
+
   var tatleController = TextEditingController();
   var timeController = TextEditingController();
   var dateController = TextEditingController();
@@ -36,7 +35,11 @@ class HomeLayout extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => AppCubit()..createDatabase(),
       child: BlocConsumer<AppCubit, AppStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is AppInsertDatabaseState) {
+            Navigator.pop(context);
+          }
+        },
         builder: (context, state) {
           AppCubit cubit = AppCubit.get(context);
           return Scaffold(
@@ -49,9 +52,12 @@ class HomeLayout extends StatelessWidget {
             body: cubit.screens[cubit.curraentIndex],
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                // insertToDatabase();
-                if (issBottonSheetShow) {
+                if (cubit.issBottonSheetShow) {
                   if (formKey.currentState.validate()) {
+                    cubit.insertToDatabase(
+                        titel: tatleController.text,
+                        date: dateController.text,
+                        time: timeController.text);
                     // insertToDatabase(
                     //   titel: tatleController.text,
                     //   date: timeController.text,
@@ -127,20 +133,16 @@ class HomeLayout extends StatelessWidget {
                       )
                       .closed
                       .then((value) {
-                    issBottonSheetShow = false;
-                    print('false');
-                    // setState(() {
-                    //   fabIcon = Icons.edit;
-                    // });
+                    cubit.ChengeissBottonSheetShow(false);
+
+                    cubit.ChengefabIconState(Icons.edit);
                   });
-                  issBottonSheetShow = true;
-                  // setState(() {
-                  //   fabIcon = Icons.add;
-                  // });
+                  cubit.ChengeissBottonSheetShow(true);
+                  cubit.ChengefabIconState(Icons.add);
                 }
               },
               child: Icon(
-                fabIcon,
+                cubit.fabIcon,
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(

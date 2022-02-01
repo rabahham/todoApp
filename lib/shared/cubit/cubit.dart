@@ -56,26 +56,30 @@ class AppCubit extends Cubit<AppStates> {
       },
     ).then((value) {
       database = value;
-      emit(state);
-    }).then((value) {
-      database = value;
       emit(AppCreateDatabaseState());
     });
   }
 
-  Future insertToDatabase({
+  insertToDatabase({
     @required titel,
     @required date,
     @required time,
   }) async {
     print('rani hna 9ble');
-    return await database.transaction((txn) {
+    await database.transaction((txn) {
       txn
           .rawInsert(
-              'INSERT INTO tasks (title ,date , time ,status) VALUES("$titel"," $time" , "$date","new")')
+              'INSERT INTO tasks (title ,time , date  ,status) VALUES("$titel"," $time" , "$date","new")')
           .then((value) {
         print('$value inserted successfully');
         emit(AppInsertDatabaseState());
+
+        getDataFromDatabase(database).then((value) {
+          tasks = value;
+          print(tasks);
+          // ChengeissBottonSheetShow(false);
+          emit(AppGetbaseState());
+        });
       }).catchError((error) {
         print('Error When Inserting New Record ${error.toString()}');
       });
@@ -86,5 +90,18 @@ class AppCubit extends Cubit<AppStates> {
 
   Future<List<Map>> getDataFromDatabase(database) async {
     return await database.rawQuery('SELECT * FROM tasks');
+  }
+
+  bool issBottonSheetShow = false;
+  IconData fabIcon = Icons.edit;
+
+  void ChengeissBottonSheetShow(@required bool issBottonSheetShowValidet) {
+    issBottonSheetShow = issBottonSheetShowValidet;
+    emit(ChengeissBottonSheetShowState());
+  }
+
+  void ChengefabIconState(@required icon) {
+    fabIcon = icon;
+    emit(ChengeissBottonSheetShowState());
   }
 }
