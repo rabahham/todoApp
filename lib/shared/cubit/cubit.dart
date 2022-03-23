@@ -88,6 +88,16 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  void upDateFromDatabase({
+    @required String status,
+    @required int id,
+  }) {
+    database.rawUpdate('UPDATE tasks SET status = ? WHERE id= ?',
+        ['$status', id]).then((value) {
+      emit(AppUpDateDatabaseState());
+    });
+  }
+
   Future<List<Map>> getDataFromDatabase(database) async {
     return await database.rawQuery('SELECT * FROM tasks');
   }
