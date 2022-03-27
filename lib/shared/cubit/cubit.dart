@@ -14,7 +14,7 @@ class AppCubit extends Cubit<AppStates> {
   List<Widget> screens = [
     NewTasksScreen(),
     DoneTasksScreen(),
-    ArchiivedTasksScreen(),
+    ArchivedTasksScreen(),
   ];
   List<String> titles = [
     'New Tasks',
@@ -28,7 +28,9 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   Database database;
-  List<Map> tasks = [];
+  List<Map> newtasks = [];
+  List<Map> donetasks = [];
+  List<Map> archavedtasks = [];
 
   //  1. create databases
   void createDatabase() {
@@ -47,11 +49,7 @@ class AppCubit extends Cubit<AppStates> {
         });
       },
       onOpen: (database) {
-        getDataFromDatabase(database).then((value) {
-          tasks = value;
-          print(tasks);
-          emit(AppGetbaseState());
-        });
+        getDataFromDatabase(database);
         print(' database opened  ');
       },
     ).then((value) {
@@ -65,7 +63,7 @@ class AppCubit extends Cubit<AppStates> {
     @required date,
     @required time,
   }) async {
-    print('rani hna 9ble');
+    // print('rani hna 9ble');
     await database.transaction((txn) {
       txn
           .rawInsert(
@@ -74,12 +72,7 @@ class AppCubit extends Cubit<AppStates> {
         print('$value inserted successfully');
         emit(AppInsertDatabaseState());
 
-        getDataFromDatabase(database).then((value) {
-          tasks = value;
-          print(tasks);
-          // ChengeissBottonSheetShow(false);
-          emit(AppGetbaseState());
-        });
+        getDataFromDatabase(database);
       }).catchError((error) {
         print('Error When Inserting New Record ${error.toString()}');
       });
@@ -94,13 +87,38 @@ class AppCubit extends Cubit<AppStates> {
   }) {
     database.rawUpdate('UPDATE tasks SET status = ? WHERE id= ?',
         ['$status', id]).then((value) {
+      getDataFromDatabase(database);
       emit(AppUpDateDatabaseState());
     });
   }
 
-  Future<List<Map>> getDataFromDatabase(database) async {
+  void deletFromDatabase({
+    @required int id,
+  }) {
+    database.rawDelete('DELETE FROM tasks WHERE id= ?', [id]).then((value) {
+      getDataFromDatabase(database);
+      emit(DeletDataBaseState());
+    });
+  }
+
+  void getDataFromDatabase(database) {
+    newtasks = [];
+    donetasks = [];
+    archavedtasks = [];
     emit(AppGetLougingState());
-    return await database.rawQuery('SELECT * FROM tasks');
+    database.rawQuery('SELECT * FROM tasks').then((value) {
+      value.forEach((element) {
+        if (element['status'] == 'new') {
+          newtasks.add(element);
+        } else if (element['status'] == 'done') {
+          donetasks.add(element);
+        } else {
+          archavedtasks.add(element);
+        }
+      });
+
+      emit(AppGetbaseState());
+    });
   }
 
   bool issBottonSheetShow = false;

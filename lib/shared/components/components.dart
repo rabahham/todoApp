@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todoApp/shared/cubit/cubit.dart';
 
 Widget defaultButton({
   double width = double.infinity,
@@ -54,40 +55,100 @@ Widget defaultFornField({
     );
 
 Widget defuletItem({
-  @required title,
-  @required time,
-  @required date,
+  @required Map model,
+  context,
 }) =>
-    Padding(
-      padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 40.0,
-            child: Text(
-              time,
-              style: TextStyle(fontWeight: FontWeight.bold),
+    Dismissible(
+      key: Key(model['id'].toString()),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 40.0,
+              child: Text(
+                '${model['time']}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          SizedBox(
-            width: 20.0,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            SizedBox(
+              width: 20.0,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${model['title']}',
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(
+                    '${model['date']}',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 5.0,
+            ),
+            SizedBox(
+              width: 20.0,
+            ),
+            IconButton(
+              color: Colors.green,
+              onPressed: () {
+                AppCubit.get(context)
+                    .upDateFromDatabase(status: 'done', id: model['id']);
+              },
+              icon: Icon(
+                Icons.check_box,
               ),
-              Text(
-                date,
-                style: TextStyle(color: Colors.grey),
+            ),
+            IconButton(
+              color: Colors.grey,
+              onPressed: () {
+                AppCubit.get(context)
+                    .upDateFromDatabase(status: 'arcaved', id: model['id']);
+              },
+              icon: Icon(
+                Icons.archive,
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
+      onDismissed: (diriction) {
+        AppCubit.get(context).deletFromDatabase(
+          id: model['id'],
+        );
+      },
     );
+
+Widget BuiledNoTasks({@required List<Map> tasks}) => tasks.length > 0
+    ? ListView.separated(
+        itemBuilder: (context, index) =>
+            defuletItem(model: tasks[index], context: context),
+        separatorBuilder: (context, index) => Container(
+              width: double.infinity,
+              height: 1.0,
+              color: Colors.grey[300],
+            ),
+        itemCount: tasks.length)
+    : Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.menu,
+              size: 100,
+              color: Colors.grey,
+            ),
+            Text(
+              'No Tasks Yet, please Add Some Tasks',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )
+          ],
+        ),
+      );

@@ -17,3 +17,5 @@ class AppUpDateDatabaseState extends AppStates {}
 class ChengeissBottonSheetShowState extends AppStates {}
 
 class ChengefabIconState extends AppStates {}
+
+class DeletDataBaseState extends AppStates {}
