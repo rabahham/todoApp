@@ -23,7 +23,7 @@ import 'package:todoApp/shared/cubit/state.dart';
 //  7. delete from database
 class HomeLayout extends StatelessWidget {
   var scaffoldKey =
-      GlobalKey<ScaffoldState>(); // bcche na2rfo ta3mn win rana dayrino
+      GlobalKey<ScaffoldState>(); // bcche na3rfo ta3mn win rana dayrino
   var formKey = GlobalKey<FormState>();
 
   var tatleController = TextEditingController();
@@ -33,7 +33,8 @@ class HomeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => AppCubit()..createDatabase(),
+      create: (BuildContext context) => AppCubit()
+        ..createDatabase(), // as if you ceriate variable and seved in var and cell it and use
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context, state) {
           if (state is AppInsertDatabaseState) {
@@ -49,7 +50,11 @@ class HomeLayout extends StatelessWidget {
                 cubit.titles[cubit.curraentIndex],
               ),
             ),
-            body: cubit.screens[cubit.curraentIndex],
+            body: state is! AppGetLougingState
+                ? cubit.screens[cubit.curraentIndex]
+                : Center(
+                    child: CircularProgressIndicator(),
+                  ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 if (cubit.issBottonSheetShow) {

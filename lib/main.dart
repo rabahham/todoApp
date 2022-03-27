@@ -10,12 +10,7 @@ import 'package:todoApp/shared/bloc_observer.dart';
 import 'package:todoApp/shared/cubit/cubit.dart';
 
 void main() {
-  BlocOverrides.runZoned(
-    () {
-      // Use cubits...
-    },
-    blocObserver: MyBlocObserver(),
-  );
+  Bloc.observer = MyBlocObserver();
 
   runApp(MyApp());
 }

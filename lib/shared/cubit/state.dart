@@ -10,6 +10,8 @@ class AppInsertDatabaseState extends AppStates {}
 
 class AppGetbaseState extends AppStates {}
 
+class AppGetLougingState extends AppStates {}
+
 class AppUpDateDatabaseState extends AppStates {}
 
 class ChengeissBottonSheetShowState extends AppStates {}
