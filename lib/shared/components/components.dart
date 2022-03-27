@@ -4,7 +4,7 @@ import 'package:todoApp/shared/cubit/cubit.dart';
 Widget defaultButton({
   double width = double.infinity,
   Color bacGrondcolor = Colors.blue,
-  bool isUpperCase = true, // kibheb text  smell
+  bool isUpperCase = true, //  text  smellkeys
   double raduis = 10.0,
   @required Function function,
   @required String text,
@@ -60,6 +60,18 @@ Widget defuletItem({
 }) =>
     Dismissible(
       key: Key(model['id'].toString()),
+      background: Container(
+        color: Colors.red[400],
+        child: Center(
+          child: Text(
+            'Remove',
+            style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
         child: Row(

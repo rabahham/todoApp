@@ -22,8 +22,7 @@ import 'package:todoApp/shared/cubit/state.dart';
 //  6. update in datbase
 //  7. delete from database
 class HomeLayout extends StatelessWidget {
-  var scaffoldKey =
-      GlobalKey<ScaffoldState>(); // bcche na3rfo ta3mn win rana dayrino
+  var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
 
   var tatleController = TextEditingController();
@@ -63,22 +62,6 @@ class HomeLayout extends StatelessWidget {
                         titel: tatleController.text,
                         date: dateController.text,
                         time: timeController.text);
-                    // insertToDatabase(
-                    //   titel: tatleController.text,
-                    //   date: timeController.text,
-                    //   time: dateController.text,
-                    // ).then((value) {
-                    //   getDataFromDatabase(database).then((value) {
-                    //     // setState(() {
-                    //     //   tasks = value;
-                    //     //   print(tasks);
-                    //     //   issBottonSheetShow = false;
-                    //     // });
-                    //     Navigator.pop(context);
-                    //   });
-
-                    //   print(' insersu $value ');
-                    // });
                   }
                 } else {
                   scaffoldKey.currentState
